@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Rows;
 
+use \Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ImportExcelRequest extends FormRequest
 {
@@ -26,5 +28,31 @@ class ImportExcelRequest extends FormRequest
         return [
             'file' => 'required|mimes:xlsx,xls',
         ];
+    }
+    
+ /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @return void
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $validator->errors(),
+        ], 422));
+    }
+
+    /**
+     * Handle an unauthorized request.
+     *
+     * @return void
+     */
+    protected function failedAuthorization()
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Unauthorized',
+        ], 401));
     }
 }
