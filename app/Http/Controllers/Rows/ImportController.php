@@ -7,7 +7,7 @@ use App\Http\Requests\Rows\ImportExcelRequest;
 
 class ImportController extends Controller
 {
-    public function uploadExcel(ImportExcelRequest $request)
+    public function importExcel(ImportExcelRequest $request)
     {
         $validated = $request->validated();
 
