@@ -16,19 +16,19 @@ class ImportExcelRowsJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $path;
-    protected $start_row;
-    protected $end_row;
+    protected $offset;
+    protected $limit;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($path, $start_row, $end_row)
+    public function __construct($path, $offset = 2, $limit = 1000)
     {
         $this->path = $path;
-        $this->start_row = $start_row;
-        $this->end_row = $end_row;
+        $this->offset = $offset;
+        $this->limit = $limit;
     }
 
     /**
@@ -43,7 +43,7 @@ class ImportExcelRowsJob implements ShouldQueue
 
         $rows_upsert_data = [];
 
-        for ($row = $this->start_row; $row <= $this->end_row; $row++) {
+        for ($row = $this->offset; $row < $this->offset + $this->limit; $row++) {
             $id = $worksheet->getCell('A' . $row)->getCalculatedValue();
             $name = $worksheet->getCell('B' . $row)->getCalculatedValue();
             $date = $worksheet->getCell('C' . $row)->getCalculatedValue();
@@ -58,7 +58,6 @@ class ImportExcelRowsJob implements ShouldQueue
 
             $date = date('Y.m.d', Date::excelToTimestamp($date));
 
-            // Создайте экземпляр модели Row и сохраните данные
             $rows_upsert_data[] = [
                 'id' => $id,
                 'name' => $name,
@@ -67,5 +66,7 @@ class ImportExcelRowsJob implements ShouldQueue
         }
 
         Row::upsert($rows_upsert_data, ['name', 'date'], ['name', 'date']);
+
+        self::dispatch($this->path)->onQueue('rows_import_queue');
     }
 }

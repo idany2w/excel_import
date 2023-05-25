@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Rows;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\Rows\ImportExcelRowsJob;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Http\Requests\Rows\ImportExcelRequest;
 
 class ImportController extends Controller
@@ -24,19 +23,12 @@ class ImportController extends Controller
 
         $path = storage_path("app/{$path}");
 
-        $spreadsheet = IOFactory::load($path);
-        $worksheet = $spreadsheet->getActiveSheet();
-        $rows_count = $worksheet->getHighestRow();
+        ImportExcelRowsJob::dispatch($path)->onQueue('rows_import_queue');
 
-        $chunk_rows = 1000;
-        $start_row = 2;
-
-        while ($start_row <= $rows_count) {
-            $endRow = $start_row + $chunk_rows - 1;
-
-            ImportExcelRowsJob::dispatch($path, $start_row, $endRow)->onQueue('rows_import_queue');
-
-            $start_row += $chunk_rows;
-        }
+        return response(
+            [
+                'nessage' => 'file uploaded'
+            ]
+        );
     }
 }
