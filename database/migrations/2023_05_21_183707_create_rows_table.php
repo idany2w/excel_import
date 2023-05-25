@@ -18,7 +18,7 @@ class CreateRowsTable extends Migration
             $table->string('name');
             $table->date('date');
 
-            $table->unique('name', 'date');
+            $table->unique(['name', 'date']);
         });
     }
 
