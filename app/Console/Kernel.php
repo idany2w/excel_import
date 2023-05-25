@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('php artisan queue:work --queue=rows_import_queue --stop-when-empty')->cron('* * * * *')->runInBackground();
     }
 
     /**
