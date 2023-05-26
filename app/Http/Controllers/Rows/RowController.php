@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Rows;
 
+use App\Models\Row;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class RowController extends Controller
 {
-    public function index(Request $reqest)
+    public function index()
     {
-        # code...
+        $rows = Row::orderByDesc('date')->get();
+
+        $result = $rows->groupBy('date');
+
+        return response($result);
     }
 }
