@@ -11,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Events\Rows\Import\ExcelImportProcessEvent;
 
 class ImportExcelRowsJob implements ShouldQueue
 {
@@ -88,6 +89,8 @@ class ImportExcelRowsJob implements ShouldQueue
         $key = md5($this->path);
 
         Redis::set($key, $this->offset + $count_rows_to_import);
+
+        ExcelImportProcessEvent::dispatch($key);
 
         if($count_rows_to_import !== 0 && $count_rows_to_import >= $this->limit){
             self::dispatch($this->path, $row_end_index)->onQueue('rows_import_queue');
