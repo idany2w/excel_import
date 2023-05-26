@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Rows\ImportController as RowsImportController;
+use App\Http\Controllers\Rows\ImportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,5 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth.basic')
-    ->post('/rows/import/excel', [RowsImportController::class, 'importExcel'])
+    ->post('/rows/import/excel', [ImportController::class, 'importExcel'])
     ->name('rows.import.excel');
+
+
