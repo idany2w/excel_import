@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Rows\ImportController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Rows\RowController;
+use App\Http\Controllers\Rows\ImportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +19,4 @@ Route::middleware('auth.basic')
     ->post('/rows/import/excel', [ImportController::class, 'importExcel'])
     ->name('rows.import.excel');
 
-
+Route::get('/rows', [RowController::class, 'index'])->name('rows.index');
