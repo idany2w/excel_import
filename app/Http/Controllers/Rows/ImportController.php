@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Rows;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\Rows\ImportExcelRowsJob;
+use Illuminate\Support\Facades\Redis;
 use App\Http\Requests\Rows\ImportExcelRequest;
 
 class ImportController extends Controller
@@ -23,12 +24,14 @@ class ImportController extends Controller
 
         $path = storage_path("app/{$path}");
 
+        $key = md5($path);
+
+        Redis::set($key, 0);
+
         ImportExcelRowsJob::dispatch($path)->onQueue('rows_import_queue');
 
-        return response(
-            [
-                'nessage' => 'file uploaded'
-            ]
-        );
+        return response([
+            'message' => 'file uploaded'
+        ]);
     }
 }
