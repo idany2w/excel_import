@@ -22,9 +22,7 @@ class ImportController extends Controller
             $file_name,
         );
 
-        $path = storage_path("app/{$path}");
-
-        $key = md5($path);
+        $key = md5(storage_path("app/{$path}"));
 
         Redis::set($key, 0);
 
