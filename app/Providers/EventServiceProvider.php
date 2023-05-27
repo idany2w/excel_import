@@ -29,9 +29,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Event::listen(
-            ExcelImportProcessEvent::class,
-            [ExcelImportProcessListener::class, 'handle']
-        );
+
     }
 }
